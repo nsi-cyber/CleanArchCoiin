@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "639134162920",
+    "project_id": "coiintracker",
+    "storage_bucket": "coiintracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639134162920:android:be583e8d78713f116cce5d",
+        "android_client_info": {
+          "package_name": "com.nsicyber.boilerplate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj2uw8yqfP6UMh1ZEtmQ4TAuVfhyEpHDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639134162920:android:83378a051367d0006cce5d",
+        "android_client_info": {
+          "package_name": "com.nsicyber.coiintrackerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj2uw8yqfP6UMh1ZEtmQ4TAuVfhyEpHDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
