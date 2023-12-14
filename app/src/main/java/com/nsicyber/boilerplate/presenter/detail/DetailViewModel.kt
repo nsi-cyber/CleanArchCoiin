@@ -8,9 +8,11 @@ import com.nsicyber.boilerplate.data.remote.entity.CoinEntity
 import com.nsicyber.boilerplate.domain.useCase.auth.GetCurrentUserUidUseCase
 import com.nsicyber.boilerplate.domain.useCase.coin.GetCoinDetailUseCase
 import com.nsicyber.boilerplate.domain.useCase.profile.AddToFavoriteUseCase
+import com.nsicyber.boilerplate.domain.useCase.profile.GetUserFavoritesUseCase
 import com.nsicyber.boilerplate.domain.useCase.profile.IsCoinFavorited
 import com.nsicyber.boilerplate.domain.useCase.profile.RemoveFromFavoriteUseCase
 import com.nsicyber.boilerplate.presenter.base.BaseViewModel
+import com.nsicyber.boilerplate.service.BackgroundTrackerService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -23,7 +25,7 @@ class DetailViewModel @Inject constructor(
     private val removeFromFavoriteUseCase: RemoveFromFavoriteUseCase,
     private val addToFavoriteUseCase: AddToFavoriteUseCase,
     private val getUserUid: GetCurrentUserUidUseCase,
-    private val isCoinFavorited: IsCoinFavorited
+    private val isCoinFavorited: IsCoinFavorited,
 ) : BaseViewModel() {
 
     private val _state = mutableStateOf(DetailState())
@@ -97,6 +99,7 @@ class DetailViewModel @Inject constructor(
                 is Resource.Success -> {
                     setSuccessDialogState(true, "Coin you selected is removed from favorite")
                     _state.value = _state.value.copy(isCoinFav = false)
+                    cancelRunnable(coinId!!)
                     setBusy(false)
 
                 }
@@ -113,14 +116,25 @@ class DetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
     }
+    private val backgroundTrackerService: BackgroundTrackerService by lazy {
+        BackgroundTrackerService()
+    }
 
+    fun addRunnable(id: String, model: CoinEntity) {
+        backgroundTrackerService.addRunnable(id, model)
+    }
+
+    fun cancelRunnable(id: String) {
+        backgroundTrackerService.cancelRunnable(id)
+    }
 
     fun addToFavorite(item: CoinEntity?) {
         addToFavoriteUseCase(_userUid.value!!,item).onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     setSuccessDialogState(true, "Coin you selected is added to favorite")
-                    _state.value = _state.value.copy(isCoinFav = false)
+                    _state.value = _state.value.copy(isCoinFav = true)
+                    addRunnable(item?.id!!,item)
                     setBusy(false)
 
                 }

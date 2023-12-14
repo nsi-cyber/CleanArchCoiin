@@ -1,5 +1,6 @@
 package com.nsicyber.boilerplate.di
 
+import android.content.Context
 import com.nsicyber.boilerplate.common.Constants
 import com.nsicyber.boilerplate.data.remote.ApiService
 import com.nsicyber.boilerplate.data.repository.CoinRepositoryImpl
@@ -7,6 +8,7 @@ import com.nsicyber.boilerplate.domain.repository.CoinRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,6 +34,8 @@ object AppModule {
     fun provideCoinRepository(api: ApiService): CoinRepository {
         return CoinRepositoryImpl(api)
     }
+
+
 
 
 }

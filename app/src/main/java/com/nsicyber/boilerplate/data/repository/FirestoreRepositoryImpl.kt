@@ -1,6 +1,7 @@
 package com.nsicyber.boilerplate.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.nsicyber.boilerplate.data.remote.entity.CoinEntity
 import com.nsicyber.boilerplate.domain.repository.FirestoreRepository
 import kotlinx.coroutines.tasks.await
@@ -12,9 +13,6 @@ class FirestoreRepositoryImpl @Inject constructor(
 ) : FirestoreRepository {
 
 
-
-
-
     override suspend fun getUserFavorites(userUid: String): List<CoinEntity?>? {
         val user =
             firebaseFirestore.collection(userUid)
@@ -23,14 +21,19 @@ class FirestoreRepositoryImpl @Inject constructor(
         return user.documents.map { it.toObject(CoinEntity::class.java) }
     }
 
-    override suspend fun addToFavorite(userUid: String,item: CoinEntity?) {
+    override suspend fun addToFavorite(userUid: String, item: CoinEntity?) {
         firebaseFirestore.collection(userUid).document(item?.id!!)
             .set(item).await()
     }
 
-    override suspend fun removeFromFavorite(userUid: String,id: String?) {
+    override suspend fun removeFromFavorite(userUid: String, id: String?) {
         firebaseFirestore.collection(userUid)
             .document(id!!).delete().await()
+    }
+
+    override suspend fun getCoinFromFirestore(userUid: String, id: String?): CoinEntity? {
+        return firebaseFirestore.collection(userUid).document(id!!)
+            .get().await().toObject(CoinEntity::class.java)
     }
 
     override suspend fun isCoinFavorited(userUid: String, id: String?): Boolean? {

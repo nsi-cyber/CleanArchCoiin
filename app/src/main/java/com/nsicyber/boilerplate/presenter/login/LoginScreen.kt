@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +40,7 @@ import com.nsicyber.boilerplate.presenter.base.components.signup
 @Composable
 fun LoginScreen() {
     val viewModel = hiltViewModel<LoginViewModel>();
-
+var context= LocalContext.current
     var textInputMail by remember { mutableStateOf<String>("") }
     var textInputPassword by remember { mutableStateOf<String>("") }
     BaseView(canGoBack = false,viewModel = viewModel, useIsBusy = false, isVerticalPaddingEnabled = false) {
@@ -109,7 +110,7 @@ fun LoginScreen() {
                 Row(
                     Modifier
                         .clickable {
-                            viewModel.loginUser(textInputMail,textInputPassword);
+                            viewModel.loginUser(context,textInputMail,textInputPassword);
 
                         }
                         .fillMaxWidth()

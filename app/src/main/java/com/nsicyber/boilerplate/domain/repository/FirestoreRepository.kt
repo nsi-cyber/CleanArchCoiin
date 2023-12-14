@@ -10,7 +10,9 @@ interface FirestoreRepository {
 
     suspend fun addToFavorite(userUid: String,item:CoinEntity?)
 
+
     suspend fun removeFromFavorite(userUid: String,id:String?)
+    suspend fun getCoinFromFirestore(userUid: String,id:String?):CoinEntity?
 
     suspend fun isCoinFavorited(userUid: String,id:String?):Boolean?
 

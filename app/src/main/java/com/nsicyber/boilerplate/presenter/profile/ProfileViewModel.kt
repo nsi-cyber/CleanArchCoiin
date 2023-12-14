@@ -21,7 +21,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getUserFavoritesUseCase: GetUserFavoritesUseCase,
-    private val removeFromFavoriteUseCase: RemoveFromFavoriteUseCase,
     private val signoutUseCase: SignoutUseCase,
     private val getUserUid: GetCurrentUserUidUseCase
 ) : BaseViewModel() {
@@ -105,26 +104,5 @@ class ProfileViewModel @Inject constructor(
 
     }
 
-
-    fun removeFromFavorites(coinId: String?) {
-        removeFromFavoriteUseCase(_userUid.value!!,coinId).onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    setSuccessDialogState(true, "Coin you selected is removed from favorite")
-                    getFavoriteCoins()
-                }
-
-                is Resource.Error -> {
-                   setErrorDialogState(true,"Error when removing from favorite")
-                    setBusy(false)
-                }
-
-                is Resource.Loading -> {
-                    setBusy(true)
-                }
-            }
-        }.launchIn(viewModelScope)
-
-    }
 
 }

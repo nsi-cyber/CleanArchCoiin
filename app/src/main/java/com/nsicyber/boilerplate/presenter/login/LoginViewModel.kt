@@ -3,16 +3,21 @@ package com.nsicyber.boilerplate.presenter.login
 
 
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.nsicyber.boilerplate.common.Resource
 import com.nsicyber.boilerplate.common.isEmailValid
+import com.nsicyber.boilerplate.data.repository.UserStore
 import com.nsicyber.boilerplate.domain.useCase.auth.LoginUseCase
 import com.nsicyber.boilerplate.presenter.base.BaseViewModel
 import com.nsicyber.boilerplate.presenter.base.components.discover
 import com.nsicyber.boilerplate.presenter.base.components.navHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +28,8 @@ class LoginViewModel @Inject constructor(
 
 
 
-    fun loginUser(email: String, password: String) {
+
+    fun loginUser(context:Context,email: String, password: String) {
         var errorText = ""
         if (!email.isEmailValid()) {
             errorText += "Enter correct mail address \n"
@@ -35,16 +41,20 @@ class LoginViewModel @Inject constructor(
         if (errorText.length > 0)
             setErrorDialogState(true, errorText)
         else
-            login(email, password)
+            login(context,email, password)
     }
 
 
 
-   private fun login(username:String,password:String) {
+   private fun login(context: Context, username:String, password:String) {
         loginUseCase(username,password).onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     navHostController!!.navigate(discover)
+                    val store = UserStore(context)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        store.saveLastUser(result.data!!.uid)
+                    }
                     setBusy(false)
                 }
                 is Resource.Error -> {
